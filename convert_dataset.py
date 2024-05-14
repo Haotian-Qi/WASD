@@ -68,11 +68,11 @@ def convert_audio(directory):
 
 if __name__ == '__main__':
 
-    subsets        = ['val'] # ['train', 'val'] # ['val']
+    subsets        = ['train', 'val'] # ['train', 'val'] # ['val']
     dataset_dir    = "WASD"
     image_dir      = "clips_videos"
     body_image_dir = "clips_videos_body"
-    audio_dir      = "clips_audios"
+    audio_dir      = "clips_audio"
 
     image_dir = os.path.join(dataset_dir, image_dir) 
     body_image_dir = os.path.join(dataset_dir, body_image_dir) 

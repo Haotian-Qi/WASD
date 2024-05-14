@@ -81,9 +81,9 @@ def get_subvids(vids_dir, output_dir):
             if file.endswith('.txt'):
                 vids.append(file.split(".txt")[0])
         return vids
-
+    
     vids = get_vidnames(vids_dir)
-
+    print(vids)
     for vid_url in tqdm(vids):
         video_name = "{}.mp4".format(vid_url)
         file_txt   = "{}.txt".format(vid_url)
@@ -92,6 +92,7 @@ def get_subvids(vids_dir, output_dir):
         full_video_name = os.path.join(vids_dir, video_name)
 
         list_times = read_file(file_fullpath)
+        new_vids_dir = 'WASD/sub_videos'
 
         for timer in list_times:
 
@@ -106,13 +107,13 @@ def get_subvids(vids_dir, output_dir):
 
 if __name__ == '__main__':
 
-    WASD_dir = "WASD"
+    WASD_dir = "WASD/backup"
     vids_dir = "WASD_videos"
     orig_vids = "orig_videos/trainval"
     vids_dir_fullpath = os.path.join(WASD_dir, vids_dir)
     orig_vids_fullpath = os.path.join(WASD_dir, orig_vids)
 
-    create_setup(WASD_dir)
+    #create_setup(WASD_dir)
     download_csv(WASD_dir)
-    download_videos(WASD_dir)
-    get_subvids(vids_dir_fullpath, orig_vids_fullpath)
+    #download_videos(WASD_dir)
+    #get_subvids(vids_dir_fullpath, orig_vids_fullpath)
