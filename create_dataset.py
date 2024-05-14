@@ -17,7 +17,7 @@ def extract_audio(orig_vid_dir, orig_audio_dir):
         videos = glob.glob("%s/*"%(inpFolder))
         for videoPath in tqdm.tqdm(videos):
 
-            if videoPath.split('/')[-1].split('.')[0] == 'AFNYkYz9Cqw_100-130':
+            if videoPath.split('/')[-1].split('.')[0] != 'A':
                 audioPath = '%s/%s'%(outFolder, videoPath.split('/')[-1].split('.')[0] + '.wav')
                 cmd = ("ffmpeg -y -i %s -async 1 -ac 1 -vn -acodec pcm_s16le -ar 16000 -threads 8 %s -loglevel panic" % (videoPath, audioPath))
                 subprocess.call(cmd, shell=True, stdout=None)
@@ -47,7 +47,7 @@ def extract_audio_clips(dataset_sets, csv_dir, clip_audio_dir, orig_audio_dir):
         for entity in tqdm.tqdm(entityList, total=len(entityList)):
             insData = df.get_group(entity)
             videoKey = insData.iloc[0]['video_id']
-            if videoKey == 'AFNYkYz9Cqw_100-130':
+            if videoKey != 'A':
                 videoName = insData.iloc[0]['video_id'][:11]  # Assuming this extracts the videoName correctly
                 start = insData.iloc[0]['frame_timestamp']
                 end = insData.iloc[-1]['frame_timestamp']
@@ -108,10 +108,8 @@ def write_annotation(dataset_sets, csv_dir, orig_vid_dir):
             videoDir = os.path.join(orig_vid_dir, dic[dataType])
             videoFile = glob.glob(os.path.join(videoDir, '{}.*'.format(video_id)))[0]
 
-            datalist.append([video_id, audio_index, entityID, frame_index, pos, labels])
+            #datalist.append([video_id, audio_index, entityID, frame_index, pos, labels])
 
-        with open(f'WASD/csv/ID_{dataType}.pkl', 'wb') as file:
-            pickle.dump(datalist, file)
 
 def extract_video_clips(dataset_sets, csv_dir, clip_vid_dir, orig_vid_dir, extract_body_data=False):
 
@@ -128,7 +126,7 @@ def extract_video_clips(dataset_sets, csv_dir, clip_vid_dir, orig_vid_dir, extra
         datalist = []
 
         for video_id, video_df in tqdm.tqdm(df.groupby('video_id'), desc='Processing Videos'):
-            if video_id == 'AFNYkYz9Cqw_100-130':
+            if video_id != 'A':
                 video_dir = os.path.join(outDir, video_id)
                 # Ensure directory exists
                 num_frames = video_df['entity_id'].value_counts().max()
@@ -178,12 +176,12 @@ def extract_video_clips(dataset_sets, csv_dir, clip_vid_dir, orig_vid_dir, extra
                             print('ERROR AT : '+str(count)+'.jpg')
                         entityID.append(int(row['entity_id'][-1])-1)
                 
-                unique_index = numpy.unique(frame_index)
+                # unique_index = numpy.unique(frame_index)
                 # index_to_int = {index: i for i, index in enumerate(unique_index)}
                 # frame_index = [index_to_int[index] for index in frame_index]            
-                datalist.append([video_id, num_frames, frame_index, entityID, pos, labels])
-                print(f'Id: {video_id}, Index max is :{max(frame_index)}, totalframe is: {num_frames}')
-                break
+                #datalist.append([video_id, num_frames, frame_index, entityID, pos, labels])
+                #print(f'Id: {video_id}, Index max is :{max(frame_index)}, totalframe is: {num_frames}')
+                #break
 
         # with open(f'{dataType}.pkl', 'wb') as file:
         #     pickle.dump(datalist, file)
@@ -268,7 +266,7 @@ if  __name__ == '__main__':
 
     # print("####### EXTRACTING AUDIO #######")
 
-    # extract_audio(orig_vids_fullpath, orig_audios_fullpath)
+    extract_audio(orig_vids_fullpath, orig_audios_fullpath)
 
     csv_dir_fullpath  = os.path.join(WASD_dir, cvs_dir)
     clip_audios_dir_fullpath = os.path.join(WASD_dir, clip_audios_dir)
@@ -285,9 +283,9 @@ if  __name__ == '__main__':
     #     print("####### STARTING FACE AND BODY CROPPING #######")
     # else:
     #     print("####### STARTING FACE CROPPING #######")
-    write_annotation(dataset_sets, csv_dir_fullpath, orig_vids_fullpath)
+    # write_annotation(dataset_sets, csv_dir_fullpath, orig_vids_fullpath)
     # extract_target_clips(dataset_sets, csv_dir_fullpath, clip_videos_dir_fullpath, orig_vids_fullpath, extract_body_data)    
-    #extract_video_clips(dataset_sets, csv_dir_fullpath, clip_videos_dir_fullpath, orig_vids_fullpath, extract_body_data)
+    extract_video_clips(dataset_sets, csv_dir_fullpath, clip_videos_dir_fullpath, orig_vids_fullpath, extract_body_data)
 
     # if extract_body_data:
     #     print("####### FINISHED FACE AND BODY CROPPING #######")
